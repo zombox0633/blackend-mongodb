@@ -6,7 +6,6 @@ interface MulterFile {
   path: string;
 }
 
-// Function to add a product
 const addProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
@@ -19,25 +18,28 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
       bestseller,
     } = req.body;
 
-    // Extract and validate uploaded images
-    // const image1 = (req.files?.image1 as MulterFile[])?.[0];
-    // const image2 = (req.files?.image2 as MulterFile[])?.[0];
-    // const image3 = (req.files?.image3 as MulterFile[])?.[0];
-    // const image4 = (req.files?.image4 as MulterFile[])?.[0];
+    // Type assertion for req.files
+    const files = req.files as { [fieldname: string]: MulterFile[] };
 
-    // const images = [image1, image2, image3, image4].filter(
-    //   (item): item is MulterFile => item !== undefined
-    // );
+    // Extract and validate uploaded images
+    const image1 = files?.image1?.[0];
+    const image2 = files?.image2?.[0];
+    const image3 = files?.image3?.[0];
+    const image4 = files?.image4?.[0];
+
+    const images = [image1, image2, image3, image4].filter(
+      (item): item is MulterFile => item !== undefined
+    );
 
     // Upload images to Cloudinary
-    // const imagesUrl = await Promise.all(
-    //   images.map(async (item) => {
-    //     const result = await cloudinary.uploader.upload(item.path, {
-    //       resource_type: "image",
-    //     });
-    //     return result.secure_url;
-    //   })
-    // );
+    const imagesUrl = await Promise.all(
+      images.map(async (item) => {
+        const result = await cloudinary.uploader.upload(item.path, {
+          resource_type: "image",
+        });
+        return result.secure_url;
+      })
+    );
 
     // Prepare product data
     const productData = {
@@ -48,7 +50,7 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
       subCategory,
       bestseller: bestseller === "true",
       sizes: JSON.parse(sizes),
-      image: "imagesUrl",
+      image: imagesUrl,
       date: new Date(),
     };
 

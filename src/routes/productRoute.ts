@@ -5,9 +5,9 @@ import {
   listProducts,
   removeProduct,
   singleProduct,
-} from "../controllers/productController.js";
-import adminAuth from "../middlewares/adminAuth.js";
-import upload from "../middlewares/multer.js";
+} from "../controllers/productController";
+import adminAuth from "../middlewares/adminAuth";
+import upload from "../middlewares/multer";
 
 const productRouter = express.Router();
 
